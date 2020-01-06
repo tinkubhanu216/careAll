@@ -33,22 +33,50 @@ while(1):
 		elif(op=='2'):
 			user_type=input("Choose User Type( Elder(e) or Younger(y)):")
 			if(user_type=="e"):
-				user_id=input("Enter User ID:")
+				flag=True
+				while (flag):
+					user_id=input("Enter User ID:")
+					try:
+						d=Elders[user_id]
+						print("Userid already exist choose another one")
+					except KeyError:
+						break
+
 				user_name=input("Enter your Name:")
-				age=int(input("Enter your Age"))
+				age=0
+				while (True):
+					try:
+						age=int(input("Enter your Age"))
+						break
+					except ValueError:
+						print("Invalid input")
 				fund=input("Enter fund")
 				contact=input("Enter contact details:")
 				Elders[user_id]=[user_name,age,fund,contact]
 				Requests[user_id]=[]
 				Rating[user_id]=[]
+				print("Successfully Registered")
 			elif(user_type=="y"):
-				user_id=input("Enter User ID:")
+				while (flag):
+					user_id=input("Enter User ID:")
+					try:
+						d=Youngers[user_id]
+						print("Userid already exist choose another one")
+					except KeyError:
+						break
 				user_name=input("Enter your Name:")
-				age=int(input("Enter your Age:"))
+				age=0
+				while (True):
+					try:
+						age=int(input("Enter your Age"))
+						break
+					except ValueError:
+						print("Invalid input")
 				contact=input("Enter contact details:")
 				Youngers[user_id]=[user_name,age,contact]
 				Hired[user_id]=[]
 				Rating[user_id]=[]
+				print("Successfully Registered")
 			else:
 				print("Invalid Input\n")
 		elif(op=='3'):
@@ -56,7 +84,7 @@ while(1):
 		else:
 			print("Invalid Input\n")
 	elif(panel=="elder"):
-		op=str(input("1. careRequests\n2. Approve careRequests\n3. addRating\n4. myRating\n5. remove Young folk\n6. logout\nChoose your Option:"))
+		op=str(input("1. careRequests\n2. Approve careRequests\n3. addRating\n4. myRating\n5. remove Young folk\n6. my young folk\n7. logout\nChoose your Option:"))
 		if(op=='1'):
 			data=Requests[user_id]
 			if(len(data)>0):
@@ -92,10 +120,14 @@ while(1):
 				print("You are already hired a younger: id is:",yid)
 		elif(op=='3'):
 			young_id=input("Enter younger ID:")
-			try:
-				rate=int(input("Enter Rating on Scale 5:"))
-			except ValueError:
-				print("Invalid input: Rating should be number")
+			flag=True
+			while (flag):
+				try:
+					rate=int(input("Enter Rating on Scale 5:"))
+					flag=False
+				except ValueError:
+					print("Invalid input: Rating should be number")
+					flag=True
 			review=input("Enter review:")
 			try:
 				Rating[young_id].append((rate,review))
@@ -120,6 +152,14 @@ while(1):
 					print("Successfully Removed Younge folk\n")
 					break
 		elif(op=='6'):
+			for young_id in Hired:
+				if(user_id in Hired[young_id]):
+					print("Younge folk Id:",young_id)
+					print("Younge folk Name:",Youngers[young_id][0])
+					print("Younge folk Age:",Youngers[young_id][1])
+					print("Younge folk Contact info:",Youngers[young_id][2])
+					break
+		elif(op=='7'):
 			panel="home"
 			user_id=""
 		else:
@@ -149,6 +189,7 @@ while(1):
 				if(len(Hired[user_id])<=4):
 					elder_id=input("Enter ElderId:")
 					Requests[elder_id].append(user_id)
+					print("Requested Successfully")
 				else:
 					print("Your Limit is Reached")
 			except KeyError:
@@ -160,17 +201,21 @@ while(1):
 			else:
 				print("Data not found")
 		elif(op=='4'):
-			elder_id=input("Enter younger ID")
-			try:
-				rate=int(input("Enter Rating on Scale 5:"))
-			except ValueError:
-				print("Invalid input: Rating should be number")
+			elder_id=input("Enter elder ID")
+			flag=True
+			while (flag):
+				try:
+					rate=int(input("Enter Rating on Scale 5:"))
+					flag=False
+				except ValueError:
+					print("Invalid input: Rating should be number")
+					flag=True
 			review=input("Enter review")
 			try:
 				Rating[elder_id].append((rate,review))
 				print("Thank you for feedback\n")
 			except KeyError:
-				print("young_id not found")
+				print("elder_id not found")
 		elif(op=='5'):
 			data=Rating[user_id]
 			r=0
